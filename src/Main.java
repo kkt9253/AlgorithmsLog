@@ -10,8 +10,8 @@ class Main {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     static int n, m;
-    // 초, 움직임 횟수, 현재 위치
     static int[] d = new int[104];
+    // 초, 움직임 횟수, 현재 위치
     static int[][][] dp = new int[104][34][2];
 
     static int min = (int)-1e9;
@@ -30,25 +30,28 @@ class Main {
             }
         }
 
-        bw.write(String.valueOf(solve(0, 0, 0)));
+        dp[0][0][0] = 0;
+        dp[0][1][1] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                for (int k = 0; k < 2; k++) {
+                    int stay = dp[i - 1][j][k];
+                    int move = (j > 0 ? dp[i-1][j-1][k^1] : min);
+                    dp[i][j][k] = Math.max(stay, move) + (d[i-1]-1 == k ? 1 : 0);
+                }
+            }
+        }
+
+        int val = -1;
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j < 2; j++) {
+                val = Math.max(val, dp[n][i][j]);
+            }
+        }
+        bw.write(String.valueOf(val));
 
         br.close();
         bw.flush();
         bw.close();
-    }
-
-    static int solve(int second, int cnt, int position) {
-        if (second >= n) {
-            return 0;
-        }
-        if (dp[second][cnt][position] != -1) {
-            return dp[second][cnt][position];
-        }
-
-        if (cnt < m) {
-            return dp[second][cnt][position] = Math.max(solve(second+1, cnt, position), solve(second+1, cnt+1, position^1)) + (d[second]-1 == position ? 1 : 0);
-        } else {
-            return dp[second][cnt][position] = solve(second+1, cnt, position) + (d[second]-1 == position ? 1 : 0);
-        }
     }
 }
