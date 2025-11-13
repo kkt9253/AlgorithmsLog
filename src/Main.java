@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
-
 class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -30,28 +29,28 @@ class Main {
             }
         }
 
-        dp[0][0][0] = 0;
-        dp[0][1][1] = 0;
-        for (int i = 1; i <= n; i++) {
-            for (int j = 0; j <= m; j++) {
-                for (int k = 0; k < 2; k++) {
-                    int stay = dp[i - 1][j][k];
-                    int move = (j > 0 ? dp[i-1][j-1][k^1] : min);
-                    dp[i][j][k] = Math.max(stay, move) + (d[i-1]-1 == k ? 1 : 0);
-                }
-            }
-        }
-
-        int val = -1;
-        for (int i = 0; i <= m; i++) {
-            for (int j = 0; j < 2; j++) {
-                val = Math.max(val, dp[n][i][j]);
-            }
-        }
-        bw.write(String.valueOf(val));
+        bw.write(String.valueOf(Math.max(solve(0, m, 0), solve(0, m-1, 1))));
 
         br.close();
         bw.flush();
         bw.close();
+    }
+
+    static int solve(int second, int cnt, int position) {
+        if (cnt < 0) {
+            return min;
+        }
+        if (second == n) {
+            return 0;
+        }
+
+        if (dp[second][cnt][position] != -1) {
+            return dp[second][cnt][position];
+        }
+
+        return dp[second][cnt][position] = Math.max(
+                solve(second+1, cnt, position),
+                solve(second+1, cnt-1, position^1)
+        ) + (d[second]-1 == position ? 1 : 0);
     }
 }
