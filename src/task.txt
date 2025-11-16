@@ -1,3 +1,5 @@
-큰돌
+백준
 
-Q. 큰돌의 사과나무
+배열 돌리기 1 - 16926
+
+https://www.acmicpc.net/problem/
