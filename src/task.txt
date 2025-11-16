@@ -1,5 +1,5 @@
 백준
 
-배열 돌리기 1 - 16926
+빗물 - 14719
 
-https://www.acmicpc.net/problem/
+https://www.acmicpc.net/problem/14719
