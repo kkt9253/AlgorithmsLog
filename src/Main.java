@@ -4,21 +4,26 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 class Main {
 
-    static class Thing {
+    static class Thing implements Comparable<Thing> {
         int m, v;
         Thing(int s, int e) {
             this.m = s;
             this.v = e;
         }
+
+        @Override
+        public int compareTo(Thing o) {
+            return Integer.compare(this.v, o.v);
+        }
     }
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    static boolean[] visited = new boolean[300004];
 
     public static void main(String[] args) throws Exception {
 
@@ -31,7 +36,7 @@ class Main {
             st = new StringTokenizer(br.readLine());
             things.add(new Thing(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
-        things.sort((x, y) -> x.v != y.v ? y.v - x.v : y.m - x.m);
+        things.sort(Comparator.naturalOrder());
 
         ArrayList<Integer> bags = new ArrayList<>();
         for (int i = 0; i < k; i++) {
@@ -39,13 +44,16 @@ class Main {
         }
         bags.sort(Comparator.naturalOrder());
 
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
         int result = 0;
+        int idx = 0;
         for (int i = 0; i < bags.size(); i++) {
-            for (int j = 0; j < things.size(); j++) {
-                if (visited[j] || things.get(j).m > bags.get(i)) continue;
-                visited[j] = true;
-                result += things.get(j).v;
-                break;
+            while (idx < n && things.get(idx).m <= bags.get(i)) {
+                pq.offer(things.get(idx).v);
+                idx++;
+            }
+            if (!pq.isEmpty()) {
+                result += pq.poll();
             }
         }
 
