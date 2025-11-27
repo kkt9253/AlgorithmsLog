@@ -1,51 +1,56 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.StringTokenizer;
 
 class Main {
 
+    static class Thing {
+        int m, v;
+        Thing(int s, int e) {
+            this.m = s;
+            this.v = e;
+        }
+    }
+
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    static StringBuilder sb = new StringBuilder();
+    static boolean[] visited = new boolean[300004];
 
-    static int h, w;
-    static int result;
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 
         StringTokenizer st = new StringTokenizer(br.readLine());
-        h = Integer.parseInt(st.nextToken());
-        w = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
 
-        int[] height = new int[w];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < w; i++) {
-            height[i] = Integer.parseInt(st.nextToken());
+        ArrayList<Thing> things = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            things.add(new Thing(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
+        things.sort((x, y) -> x.v != y.v ? y.v - x.v : y.m - x.m);
 
-        // left 최대 벽
-        int[] left = new int[w];
-        left[0] = height[0];
-        for (int i = 1; i < w; i++) {
-            left[i] = Math.max(height[i], left[i-1]);
+        ArrayList<Integer> bags = new ArrayList<>();
+        for (int i = 0; i < k; i++) {
+            bags.add(Integer.parseInt(br.readLine()));
         }
+        bags.sort(Comparator.naturalOrder());
 
-        // right 최대 벽
-        int[] right = new int[w];
-        right[w - 1] = height[w - 1];
-        for (int i = w-2; i >= 0; i--) {
-            right[i] = Math.max(right[i+1], height[i]);
-        }
-
-        // left & right 벽 중 작은거로부터 가둬진 현재 블록의 빗물 깊이
-        for (int i = 0; i < w; i++) {
-            result += Math.min(left[i], right[i]) - height[i];
+        int result = 0;
+        for (int i = 0; i < bags.size(); i++) {
+            for (int j = 0; j < things.size(); j++) {
+                if (visited[j] || things.get(j).m > bags.get(i)) continue;
+                visited[j] = true;
+                result += things.get(j).v;
+                break;
+            }
         }
 
         bw.write(result + "\n");
-        bw.flush();
+        bw.close();
     }
 }
+
