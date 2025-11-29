@@ -1,29 +1,35 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 class Main {
 
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
     public static void main(String[] args) throws Exception {
 
+        PriorityQueue<Double> pq = new PriorityQueue<>((x, y) -> (int) (y - x));
         int n = Integer.parseInt(br.readLine());
-        int[] arr = new int[10004];
-        int min = 10004;
         for (int i = 0; i < n; i++) {
-            int a = (int) Math.round((Double.parseDouble(br.readLine())) * 100);
-            if (min > a) min = a;
-            arr[a]++;
-        }
-        int cnt = 0;
-        for (int i = min; cnt < 5; i++) {
-            while (arr[i] != 0) {
-                cnt++;
-                arr[i]--;
-                System.out.println(i / 100 + "." + (i % 100 < 10 ? "0"+ i % 100 : i % 100 / 10));
-                if (cnt >= 5) break;
+            double a = Double.parseDouble(br.readLine());
+            if (pq.size() == 5) {
+                pq.offer(a);
+                pq.poll();
+            } else {
+                pq.offer(a);
             }
         }
+        ArrayList<Double> arr = new ArrayList<>(pq);
+        arr.sort(Comparator.naturalOrder());
+        for (Double v : arr) {
+            bw.write(v + "\n");
+        }
+        bw.close();
     }
 }
 
