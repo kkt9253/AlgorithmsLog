@@ -3,9 +3,7 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 class Main {
@@ -13,55 +11,38 @@ class Main {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    static class Line {
-        int start, end;
-
-        public Line(int a, int b) {
-            start = a;
-            end = b;
-        }
-    }
     public static void main(String[] args) throws Exception {
 
         int n = Integer.parseInt(br.readLine());
-        ArrayList<Line> lines = new ArrayList<>();
+        ArrayList<Integer> arr = new ArrayList<>();
+        StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            lines.add(new Line(
-                    Integer.parseInt(st.nextToken()),
-                    Integer.parseInt(st.nextToken()
-                    )));
+            arr.add(Integer.parseInt(st.nextToken()));
         }
-        lines.sort(Comparator.comparingInt(x -> x.start));
+        arr.sort(Comparator.naturalOrder());
+        int x = Integer.parseInt(br.readLine());
 
         int result = 0;
-        int curL = lines.get(0).start;
-        int curR = lines.get(0).end;
-        for (int i = 1; i < n; i++) {
-            int nextL = lines.get(i).start;
-            int nextR = lines.get(i).end;
-
-            if (curR >= nextL) {
-                if (curR < nextR) {
-                    curR = nextR;
-                }
+        int p1 = 0; int p2 = n-1;
+        while (p1 < p2) {
+            int sum = arr.get(p1) + arr.get(p2);
+            if (sum == x) {
+                result++;
+                p1++; p2--;
+            } else if (sum < x) {
+                p1++;
             } else {
-                result += curR - curL;
-                curL = nextL;
-                curR = nextR;
+                p2--;
             }
         }
-        result += curR - curL;
+
         bw.write(result + "\n");
         bw.close();
     }
 }
 
 /*
-5
-0 2
-1 5
-3 7
-8 10
-6 9
+8
+1 9 2 8 4 7 3 6
+10
  */
